@@ -1,11 +1,19 @@
-TARGET = cc2_portscan_demo cc2_keystrokes_demo
+# Makefile for building CrossC2Kit demo projects
 
-main: $(TARGET)
+# Targets to build
+TARGETS = cc2_portscan_demo cc2_keystrokes_demo
 
-CFLAG = -fPIC -shared
+# Compiler and flags
+CC = clang
+CFLAGS = -fPIC -shared
 
-%:
-	clang $@.c -o $@.dylib $(CFLAG)
+# Default target
+all: $(TARGETS)
 
+# Build each target
+%: %.c
+	$(CC) $(CFLAGS) -o $@.dylib $<
+
+# Clean up build artifacts
 clean:
 	-rm -rf ./*.dylib

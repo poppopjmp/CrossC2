@@ -6,6 +6,8 @@
 #include <sys/socket.h>  
 #include <netinet/in.h>  
 
+// Function: sendUDP
+// Purpose: This function sends a UDP request to a specified host and port, and receives the response.
 int sendUDP(char *hostIP, int port, int msgType, char *request, int request_len, char **response, int *response_len) {
     *response_len = 0;
     int sockfd, n;
@@ -55,6 +57,8 @@ int sendUDP(char *hostIP, int port, int msgType, char *request, int request_len,
     return 1;
 }
 
+// Function: cc2_rebind_get_protocol
+// Purpose: This function sends a GET request using a custom protocol.
 void cc2_rebind_get_protocol(char *reqData, char **outputData, long long *outputData_len) {
     printf("------ custom get protocol ------\n");
     // 8.8.8.8 replaced with the real proxy_server ip
@@ -66,6 +70,9 @@ void cc2_rebind_get_protocol(char *reqData, char **outputData, long long *output
     }
     printf("------ custom protocol ------\n");
 }
+
+// Function: cc2_rebind_post_protocol
+// Purpose: This function sends a POST request using a custom protocol.
 void cc2_rebind_post_protocol(char *reqData, char *id, char **outputData, long long *outputData_len) {
     printf("------ custom post protocol ------\n");
     // printf("post Data: %s\n", reqData);
